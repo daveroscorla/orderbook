@@ -90,7 +90,9 @@ Here I've assumed order number will be sequentially incrementing, so a queue is 
   
 To validate the orderbook, a test 'feed' was implemented, using 2 securities, Facebook and Google. Bid and offers were added, modified and deleted with the results checked. While the values were the same in both runs, the price ordering was reversed between the two symbols, to confirm that the logic for the book order was correct. To confirm, some simple unit tests were written to look at how many symbols the book had, the book depths and the individual Orders at each price level.
 
-  <pictures here?
+![Orderbook](images/books.png)
+
+![Unit tests](images/tests.png)
             
 ## Improvements
             
@@ -124,7 +126,7 @@ In terms of the data structures themselves, it's clear that while nice an readab
 
 In test the following space savings were seen:
             
-            <picture>
+![Size comp](images/compactorder.png)
   
 ## Conclusions
   
