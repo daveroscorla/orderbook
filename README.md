@@ -1,5 +1,11 @@
-# orderbook
+# Orderbook exercise
 
+# Table of Contents
+1. [Description of exercise](#synopsis)
+2. [Implementation](#implementation)
+3. [Testing](#testing-the-implementation)
+4. [Potential improvements](#improvements)
+5. [Conclusions](#conclusions)
 
 ## Synopsis
 Order is a BUY or SELL instruction, which contains the following attributes:
@@ -11,7 +17,7 @@ SecurityID
 Price
 Volume
 
-## Tasks
+### Tasks
 
 1. Write an implementation for an Order Book which is ordered “Market-by-
 price”.
@@ -57,7 +63,7 @@ The first attempt at an order book struct is defined as follows:
     };
  ```
     
-`OrderID_` and `Volume_` were assigned `int_fast64_t`, as you would imagine that large volumes of trades might exceed the limits of a 32 bit int, which would be catastrophic. Details of the order are stored as enums. This potentially could be improved, as discussed later. <link in here> `SecurityID_` has been made a string, however again as the default size for a string is generally larger than an identifier such as an ISIN, this could be made smaller. `Price` is a float, which should be sufficient to represent a price, however as floating point comparisons can sometimes be innacurate, some more thought could be given here.
+`OrderID_` and `Volume_` were assigned `int_fast64_t`, as you would imagine that large volumes of trades might exceed the limits of a 32 bit int, which would be catastrophic. Details of the order are stored as enums. This potentially could be improved, as discussed [later](#improvements). <link in here> `SecurityID_` has been made a string, however again as the default size for a string is generally larger than an identifier such as an ISIN, this could be made smaller. `Price` is a float, which should be sufficient to represent a price, however as floating point comparisons can sometimes be innacurate, some more thought could be given here.
 
 ### Order book structure
 
