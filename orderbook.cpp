@@ -66,8 +66,8 @@ namespace orderbook {
 
         return depth;
     }
-
-    std::deque<Order>::const_iterator Implementation::Get(const std::string & security, OrderDirection_t direction, int index) const {
+    
+    std::pair<std::deque<Order>::const_iterator, std::deque<Order>::const_iterator> Implementation::Get(const std::string & security, OrderDirection_t direction, int index) const {
         static std::deque<Order> nullLevel;
         auto entry = orderbook_.find(security);
         if (entry == orderbook_.end()) {
@@ -78,25 +78,25 @@ namespace orderbook {
                 {
                     auto it = entry->second.bid_.begin();
                     std::advance(it, index);
-                    return it->second.begin();
+                    return std::make_pair(it->second.begin(), it->second.end());
                 }
                 break;
             case OrderDirection_t::SELL:
                 {
                     auto it = entry->second.ask_.begin();
                     std::advance(it, index);
-                    return it->second.begin();
+                    return std::make_pair(it->second.begin(), it->second.end());
                 }
                 break;
             default:
-                std::cerr<<"Unhandled OrderDirection "<<static_cast<std::underlying_type<OrderDirection_t>::type>(direction)<<'\n'; 
+                std::cerr<<"Unhandled OrderDirection "<<static_cast<std::underlying_type<OrderDirection_t>::type>(direction)<<'\n';
                 break;
             }
         }
-        return nullLevel.begin();
+        return std::make_pair(nullLevel.begin(), nullLevel.end());
     }
 
-    std::deque<Order>::const_iterator Implementation::Top(const std::string & security, OrderDirection_t direction) const {
+    std::pair<std::deque<Order>::const_iterator, std::deque<Order>::const_iterator> Implementation::Top(const std::string & security, OrderDirection_t direction) const {
         return Get(security, direction, 0);
     }
 
