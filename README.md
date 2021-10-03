@@ -63,26 +63,31 @@ The first attempt at an order book struct is defined as follows:
     };
  ```
     
-`OrderID_` and `Volume_` were assigned `int_fast64_t`, as you would imagine that large volumes of trades might exceed the limits of a 32 bit int, which would be catastrophic. Details of the order are stored as enums. This potentially could be improved, as discussed [later](#improvements). <link in here> `SecurityID_` has been made a string, however again as the default size for a string is generally larger than an identifier such as an ISIN, this could be made smaller. `Price` is a float, which should be sufficient to represent a price, however as floating point comparisons can sometimes be innacurate, some more thought could be given here.
+`OrderID_` and `Volume_` were typed `int_fast64_t`, as potentially large volumes of trades might exceed the limits of a 32 bit int, which would be catastrophic for an orderbook. Details of the order are stored as enums. `SecurityID_` has been made a string, however as the default size for a string is generally larger than an identifier such as an ISIN, this could potentially made smaller. `Price` is a float, which should be sufficient to represent a price, however as floating point comparisons can sometimes be innacurate, some more thought could be given here. In summary, there could be changes to improve the memory footprint particularly, which are discussed [later](#improvements).
 
 ### Order book structure
 
-The main lookup of the security has been implemented as an `unordered_map`:
+The main lookup of the security id has been implemented as an `unordered_map`:
 
 ```
     using Book = std::unordered_map<std::string, Security>;
 ```
 
-The rationale is that while a regular `std::map` will perform well for small collections, even logarithmic complexity will have a cost as the number of elements becomes large. An unordered_map, while comsuming extra memory, should have a near constant time look-up. A `Reserve` function was added to the implementation to size the map appropriately at the start of the day rather than trigger a lot of re-allocation of memory and copies until we receive all symbols that comprise a market. 
+The rationale is that while a regular `std::map` will perform well for small collections, even logarithmic complexity look-ups will have a cost as the number of securities becomes large. An unordered_map, while comsuming extra memory, should have a near constant time look-up complexity. A `Reserve` function was added to the implementation to size the map appropriately at the start of the day. As an unordered map is implemented as an array, there is the potential for triggering a lot of memory re-allocations and copies until we receive all symbols that comprise the market. 
 
 The sides of the book have been aggregated in a `Security` struct and are implemented as std::maps:
 
 ```
     using BidLevels = std::map<float, std::deque<Order>, std::greater<float>>;
     using AskLevels = std::map<float, std::deque<Order>, std::less<float>>;
+    
+    struct Security {
+        BidLevels bid_;
+        AskLevels ask_;
+    };
 ```
 
-The thinking here is that book depths are pretty finite, so look-ups on price should be relatively quick. Insertions and deletions from the book should also have logarithmic complexity if not at the top of the book, if at the top or the end, then it should be constant. Resizing of the container will not be a problem as the map is generally implemented as a red black binary tree. Using an unordered map here is not an option as we need to maintain ordering, here using `std::greater` and `std::less` to make sure that bids are ordered in ascending price and offers in descending.
+The thinking here is that book depths are pretty finite in terms of size, so look-ups on price should be relatively quick. Insertions and deletions from the front and end of the should be constant time and also have logarithmic complexity elsewhere. Resizing of the container will not be a problem as maps is generally implemented as a red black binary trees. Using any hash based container here is not an option as we need to maintain ordering. We are using `std::greater` and `std::less` to make sure that bids are ordered in ascending price and offers in descending order.
 
 At each price level, we have a `std::deque`, to aggregate the orders:
 
@@ -90,11 +95,11 @@ At each price level, we have a `std::deque`, to aggregate the orders:
   std::deque<Order>
 ```
   
-Here I've assumed order number will be sequentially incrementing, so a queue is a good structure in order to store these sequential Orders. Insertions will be at the front and deletions will be from the end, which is fast for a deque. As the orders are ordered, look-ups can be done using a binary search, which will have O(log n) complexity. Another reason for using a deque over a set for instance is a deque should be more cache friendly.
+Assuming order number will be sequentially incrementing, a queue is a good structure in order to store these sequential elements. Insertions of Orders at the front and removals from the back will be optimised for a deque. As the orders are ordered, look-ups can be done using binary search, which will have O(log n) complexity similar to a set. However a potential performance benefit for using a deque over a set is a deque should be more cache friendly.
   
 ## Testing the implementation
   
-To validate the orderbook, a test 'feed' was implemented, using 2 securities, Facebook and Google. Bid and offers were added, modified and deleted with the results checked. While the values were the same in both runs, the price ordering was reversed between the two symbols, to confirm that the logic for the book order was correct. To confirm, some simple unit tests were written to look at how many symbols the book had, the book depths and the individual Orders at each price level.
+To validate the orderbook, a test 'feed' was implemented, using 2 test securities, Facebook and Google. Bid and offers were added, modified and deleted and the results checked. In order to check the logic of the operations, the same orders at the same price were reversed between the two symbols and produced the same books. For regression testing, some simple unit tests were written, comparing how many symbols the book had, the book depths and the individual Orders at each price level.
 
 ![Orderbook](images/books.png)
 
@@ -102,9 +107,9 @@ To validate the orderbook, a test 'feed' was implemented, using 2 securities, Fa
             
 ## Improvements
             
-The 21 million securities question is an interesting one. In terms of the algorithm, I think it's pretty efficient. The used of an `unordered_map` alleviated most of the cost of a lot of securities as far as speed is concerned. 
+The 21 million securities question is an interesting one. In terms of the algorithm, it should be pretty unaffected by the number of securities. The used of an `unordered_map` should help us here as far as speed is concerned. 
                                                                                                 
-In terms of the data structures themselves, it's clear that while nice an readable, the original `Order` structure is certainly not optimised for size. Another attempt was made to see what scope there was to minimise this footprint and an alternative implementation was made using bitfields and fixed length arrays:
+In terms of the data structures themselves, it's clear that while nice an readable, the original `Order` structure is certainly not optimised for size. A more space optimised structure was made to see what scope there was to minimise this footprint. The main difference here being the use of bitfields and fixed length arrays:
             
 ```
     constexpr unsigned short ORDER_ACTION_ADD = 1;
@@ -130,13 +135,13 @@ In terms of the data structures themselves, it's clear that while nice an readab
     };
 ```  
 
-In test the following space savings were seen:
+In test the following space savings were achieved:
             
 ![Size comp](images/compactorder.png)
   
 ## Conclusions
   
-With limited time, it's probably not the ultimate orderbook implementation however seems reasonably efficient. With testing, the relative efficiencies of the various containers would become clearer and could be benchmarked. Also, a bit of business knowledge can also help to optimise i.e. what's the initial size to set the main map to avoid resizing and re-allocation/coprying? 
+With limited time, it's probably not the ultimate orderbook implementation, however seems reasonably efficient. With testing, the relative efficiencies of the various containers would become clearer and could be benchmarked. Also, a bit of business knowledge can also help to optimise further. For instance, what's the initial size to set the main map in order avoid re-allocation/copying? With knowledge of the typical trading patterns, could searches be optimised to target the top of the book rather than the full depth for example? 
 
 
 
