@@ -19,7 +19,7 @@ std::vector<orderbook::Order> datafeed {
 { OrderID_: 7, OrderAction_: orderbook::OrderAction_t::Add, OrderDirection_: orderbook::OrderDirection_t::SELL, OrderConstraints_: orderbook::OrderConstraints_t::MARKET, SecurityID_: "US30303M1027", Price_:100.1, Volume_: 10000 },
 { OrderID_: 8, OrderAction_: orderbook::OrderAction_t::Add, OrderDirection_: orderbook::OrderDirection_t::SELL, OrderConstraints_: orderbook::OrderConstraints_t::MARKET, SecurityID_: "US30303M1027", Price_:100.5, Volume_: 7000 },
 { OrderID_: 9, OrderAction_: orderbook::OrderAction_t::Add, OrderDirection_: orderbook::OrderDirection_t::SELL, OrderConstraints_: orderbook::OrderConstraints_t::MARKET, SecurityID_: "US30303M1027", Price_:100.8, Volume_: 500 },
-// Reverse the order and make sure we get the same bool entries as previously
+// Reverse the order and make sure we get the same book entries as previously
 { OrderID_: 11, OrderAction_: orderbook::OrderAction_t::Add, OrderDirection_: orderbook::OrderDirection_t::BUY, OrderConstraints_: orderbook::OrderConstraints_t::MARKET, SecurityID_: "US02079K1079", Price_:99.9, Volume_: 2000 },
 { OrderID_: 12, OrderAction_: orderbook::OrderAction_t::Add, OrderDirection_: orderbook::OrderDirection_t::BUY, OrderConstraints_: orderbook::OrderConstraints_t::MARKET, SecurityID_: "US02079K1079", Price_:100.0, Volume_: 5000 },
 { OrderID_: 13, OrderAction_: orderbook::OrderAction_t::Add, OrderDirection_: orderbook::OrderDirection_t::BUY, OrderConstraints_: orderbook::OrderConstraints_t::MARKET, SecurityID_: "US02079K1079", Price_:100.0, Volume_: 5000 },
