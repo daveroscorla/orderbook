@@ -87,7 +87,7 @@ The sides of the book have been aggregated in a `Security` struct and are implem
     };
 ```
 
-The thinking here is that book depths are pretty finite in terms of size, so look-ups on price should be relatively quick. Insertions and deletions from the front and end of the should be constant time and also have logarithmic complexity elsewhere. Resizing of the container will not be a problem as maps is generally implemented as a red black binary trees. Using any hash based container here is not an option as we need to maintain ordering. We are using `std::greater` and `std::less` to make sure that bids are ordered in ascending price and offers in descending order.
+The thinking here is that book depths are pretty finite in terms of size, so look-ups on price should be relatively quick. Insertions and deletions from the front and end of the should be constant time and also have logarithmic complexity elsewhere. Resizing of the container will not be a problem as maps are generally implemented as a red black binary trees. Using any hash based container here is not an option as we need to maintain ordering. We are using `std::greater` and `std::less` to make sure that bids are ordered in ascending price and offers in descending order.
 
 At each price level, we have a `std::deque`, to aggregate the orders:
 
