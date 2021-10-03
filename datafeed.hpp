@@ -44,85 +44,69 @@ void TestBook(const orderbook::Implementation & book) {
     // Bid side - US30303M1027
 
     // 2 entries at 100.0
-    auto buyElement1 = book.Get("US30303M1027", OrderDirection_t::BUY, 0);
-    auto price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10000 && "The price should be 100.0");
+    auto buyElement1 = book.Get("US30303M1027", OrderDirection_t::BUY, 0).first;
+    assert(buyElement1->Price_ == 100.0f && "The price should be 100.0");
     assert(buyElement1->Volume_ == 500 && "The volume should be 500");
     auto buyElement2 = buyElement1 + 1;
-    price = static_cast<int>(buyElement2->Price_ * 100);
-    assert(price == 10000 && "The price should be 100.0");
-    assert(buyElement2->Price_ == 100.0 && "The price should be 100.0");
+    assert(buyElement2->Price_ == 100.0f && "The price should be 100.0");
     assert(buyElement2->Volume_ == 5000 && "The volume should be 5000");
 
     // 1 entry at 99.9
-    buyElement1 = book.Get("US30303M1027", OrderDirection_t::BUY, 1);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 9990 && "The price should be 99.9");
+    buyElement1 = book.Get("US30303M1027", OrderDirection_t::BUY, 1).first;
+    assert(buyElement1->Price_ == 99.9f && "The price should be 99.9");
     assert(buyElement1->Volume_ == 2000 && "The volume should be 2000");
 
     // Ask side - US30303M1027
 
     // 1 entry at 100.1
-    buyElement1 = book.Get("US30303M1027", OrderDirection_t::SELL, 0);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10010 && "The price should be 100.1");
+    buyElement1 = book.Get("US30303M1027", OrderDirection_t::SELL, 0).first;
+    assert(buyElement1->Price_ == 100.1f && "The price should be 100.1");
     assert(buyElement1->Volume_ == 10000 && "The volume should be 10000");
 
-    // 1 entry at 100.1
-    buyElement1 = book.Get("US30303M1027", OrderDirection_t::SELL, 1);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10050 && "The price should be 100.5");
+    // 1 entry at 100.5
+    buyElement1 = book.Get("US30303M1027", OrderDirection_t::SELL, 1).first;
+    assert(buyElement1->Price_ == 100.5f && "The price should be 100.5");
     assert(buyElement1->Volume_ == 7000 && "The volume should be 7000");
 
-    // 1 entry at 100.1
-    buyElement1 = book.Get("US30303M1027", OrderDirection_t::SELL, 2);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10080 && "The price should be 100.8");
+    // 1 entry at 100.8
+    buyElement1 = book.Get("US30303M1027", OrderDirection_t::SELL, 2).first;
+    assert(buyElement1->Price_ == 100.8f && "The price should be 100.8");
     assert(buyElement1->Volume_ == 500 && "The volume should be 500");
-    
     // Bid side - US02079K1079
 
     // 2 entries at 100.0
-    buyElement1 = book.Get("US02079K1079", OrderDirection_t::BUY, 0);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10000 && "The price should be 100.0");
+    buyElement1 = book.Get("US02079K1079", OrderDirection_t::BUY, 0).first;
+    assert(buyElement1->Price_ == 100.0f && "The price should be 100.0");
     assert(buyElement1->Volume_ == 500 && "The volume should be 500");
     buyElement2 = buyElement1 + 1;
-    price = static_cast<int>(buyElement2->Price_ * 100);
-    assert(price == 10000 && "The price should be 100.0");
-    assert(buyElement2->Price_ == 100.0 && "The price should be 100.0");
+    assert(buyElement2->Price_ == 100.0f && "The price should be 100.0");
     assert(buyElement2->Volume_ == 5000 && "The volume should be 5000");
 
     // 1 entry at 99.9
-    buyElement1 = book.Get("US02079K1079", OrderDirection_t::BUY, 1);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 9990 && "The price should be 99.9");
+    buyElement1 = book.Get("US02079K1079", OrderDirection_t::BUY, 1).first;
+    assert(buyElement1->Price_ == 99.9f && "The price should be 99.9");
     assert(buyElement1->Volume_ == 2000 && "The volume should be 2000");
 
     // Ask side - US02079K1079
 
     // 1 entry at 100.1
-    buyElement1 = book.Get("US02079K1079", OrderDirection_t::SELL, 0);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10010 && "The price should be 100.1");
+    buyElement1 = book.Get("US02079K1079", OrderDirection_t::SELL, 0).first;
+    assert(buyElement1->Price_ == 100.1f && "The price should be 100.1");
     assert(buyElement1->Volume_ == 10000 && "The volume should be 10000");
 
-    // 1 entry at 100.1
-    buyElement1 = book.Get("US02079K1079", OrderDirection_t::SELL, 1);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10050 && "The price should be 100.5");
+    // 1 entry at 100.5
+    buyElement1 = book.Get("US02079K1079", OrderDirection_t::SELL, 1).first;
+    assert(buyElement1->Price_ == 100.5f && "The price should be 100.5");
     assert(buyElement1->Volume_ == 7000 && "The volume should be 7000");
 
-    // 1 entry at 100.1
-    buyElement1 = book.Get("US02079K1079", OrderDirection_t::SELL, 2);
-    price = static_cast<int>(buyElement1->Price_ * 100);
-    assert(price == 10080 && "The price should be 100.8");
+    // 1 entry at 100.8
+    buyElement1 = book.Get("US02079K1079", OrderDirection_t::SELL, 2).first;
+    assert(buyElement1->Price_ == 100.8f && "The price should be 100.8");
     assert(buyElement1->Volume_ == 500 && "The volume should be 500");
 
     std::cout<<"All tests passed...."<<std::endl;
-}
-
-
+}    
+    
 } // namespace orderbook
 
 
