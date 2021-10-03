@@ -27,7 +27,7 @@ namespace orderbook {
     };
 
     struct Order {
-        int_fast32_t OrderID_;
+        int_fast64_t OrderID_;
         OrderAction_t OrderAction_;
         OrderDirection_t OrderDirection_;
         OrderConstraints_t OrderConstraints_;
@@ -52,8 +52,8 @@ namespace orderbook {
             int Process(const Order & order);
             bool Exists(const std::string & security) const;
             size_t BookDepth(const std::string & security, OrderDirection_t direction) const;
-            std::deque<Order>::const_iterator Get(const std::string & security, OrderDirection_t direction, int index) const;
-            std::deque<Order>::const_iterator Top(const std::string & security, OrderDirection_t direction) const;
+            std::pair<std::deque<Order>::const_iterator, std::deque<Order>::const_iterator> Get(const std::string & security, OrderDirection_t direction, int index) const;
+            std::pair<std::deque<Order>::const_iterator, std::deque<Order>::const_iterator> Top(const std::string & security, OrderDirection_t direction) const;
             int PrintBook(const std::string & security) const;
 
         private:    
