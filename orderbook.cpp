@@ -178,7 +178,6 @@ namespace orderbook {
         }
     }
 
-    // Perhaps a book the other way is upper_bound? Could this be a template function? Can we overload on something?
     int Implementation::Add(const Order & order, Security & security) {
         int rc = SUCCESS;
 
