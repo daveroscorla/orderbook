@@ -128,4 +128,4 @@ namespace orderbook {
         return SUCCESS;
     }                
 
-}
+} // namespace orderbook
